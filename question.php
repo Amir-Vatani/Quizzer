@@ -1,13 +1,15 @@
 <?php
     include "database.php";
-    
+
     $questions = $db->query("SELECT * FROM questions");
     $question_no = $questions->num_rows;
 
-    $questions = $db->query("SELECT * FROM questions WHERE id = 1");
+    $question_id = $_GET["q"];
+
+    $questions = $db->query("SELECT * FROM questions WHERE id = $question_id");
     $question = $questions->fetch_assoc();
 
-    $answers = $db->query("SELECT * FROM answers WHERE question_id = 1");
+    $answers = $db->query("SELECT * FROM answers WHERE question_id = $question_id");
 ?>
 <html lang="fa" dir="rtl">
     <head>
@@ -56,21 +58,25 @@
                             از
                             <?php echo $question_no; ?>
                         </h5>
+                        
                         <div class="card-body">
                             <p class="card-text">
                             <?php echo $question["text"]; ?>
                             </p>
-                            
-                            <?php foreach($answers as $answer): ?>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <?php echo $answer["text"]; ?>
-                                </label>
-                            </div>
-                            <?php endforeach; ?>
-                            <button type="sumbit" class="btn btn-danger">بعدی</button>
+                            <form action="process.php" method="post">
+                                <input type="hidden" name="question" value="<?php echo $question["id"]; ?>">
+                                <?php foreach($answers as $answer): ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="<?php echo $answer["id"]; ?>" name="answer" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        <?php echo $answer["text"]; ?>
+                                    </label>
+                                </div>
+                                <?php endforeach; ?>
+                                <button type="sumbit" class="btn btn-danger">بعدی</button>
+                            </form>
                         </div>
+                        
                     </div>
                 </div>
             </div>
